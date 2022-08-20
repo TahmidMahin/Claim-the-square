@@ -1,0 +1,165 @@
+package com.codingame.game;
+
+import com.codingame.game.action.ActionType;
+import com.codingame.gameengine.module.entities.*;
+import com.google.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.codingame.game.action.Action;
+
+public class Grid {
+    @Inject
+    private GraphicEntityModule graphicEntityModule;
+
+    private String[] images = { "cross.png", "circle.png" };
+
+    private final int[] dr = {-1, 1, 0, 0};
+    private final int[] dc = {0, 0, -1, 1};
+
+    private Group entity;
+
+    private int origX;
+    private int origY;
+    private int cellSize;
+    private int[][] grid = new int[Config.GRIDSIZE][Config.GRIDSIZE];
+    protected int winner = 0;
+
+    public int[][] getGridState() {
+        if(winner == 0)
+            return grid;
+        return null;
+    }
+
+    public int play(Action action) throws InvalidAction {
+        Coordinate src = new Coordinate(action.srcRow, action. srcCol);
+        Coordinate dest = new Coordinate(action.destRow, action.destCol);
+        ActionType actionType = action.actionType;
+        int index = action.player.getIndex() + 1;
+
+        if (!src.isValid()) {
+            throw new InvalidAction("Source position is outside of the grid");
+        }
+        else if (!dest.isValid()) {
+            throw new InvalidAction("Destination position is outside of the grid");
+        }
+        else if (grid[action.srcCol][action.srcRow] != index) {
+            throw new InvalidAction("Source position does not contain player's piece");
+        }
+        else if (grid[action.destRow][action.destCol] != 0) {
+            throw new InvalidAction("Destination position is not empty");
+        }
+        else if (actionType != ActionType.REPL && actionType != ActionType.JUMP) {
+            throw new InvalidAction("Invalid command");
+        }
+        else if (actionType == ActionType.REPL && !src.isDiagonal(dest)) {
+            throw new InvalidAction("Invalid move!");
+        }
+        else if (actionType == ActionType.JUMP && !src.isAdjacent(dest)) {
+            throw new InvalidAction("Invalid move!");
+        }
+
+        // update grid
+        if (actionType != ActionType.REPL) {
+            grid[action.srcRow][action.srcCol] = 0;
+        }
+        grid[action.destRow][action.destCol] = index;
+        for (int dir = 0; dir < 4; dir++) {
+            int r = dest.r + dr[dir];
+            int c = dest.c + dc[dir];
+            if (new Coordinate(r, c).isValid()) {
+                int index2 = grid[r][c];
+                if (index2 != 0 && index2 != index) {
+                    grid[r][c] = index;
+                }
+            }
+        }
+
+        //TODO implement flood-fill to find reachability
+
+        winner = checkWinner();
+        drawPlay(action);
+        return winner;
+    }
+
+    private int checkWinner() {
+        int counter1 = 0, counter2 = 0;
+        int totalSquare = Config.GRIDSIZE*Config.GRIDSIZE - 4;
+        for (int i = 0; i < Config.GRIDSIZE; i++) {
+            for (int j = 0; j < Config.GRIDSIZE; j++) {
+                if (grid[i][j] == 0)
+                    return 0;
+                else if (grid[i][j] == 1)
+                    counter1++;
+            }
+        }
+        counter2 = totalSquare - counter1;
+        if (counter1 > counter2)
+            return 1;
+        return 2;
+    }
+    //TODO figure out
+    public void draw(int origX, int origY, int cellSize, int lineWidth, int lineColor) {
+        this.origX = origX;
+        this.origY = origY;
+        this.cellSize = cellSize;
+        this.entity = graphicEntityModule.createGroup();
+
+        double xs[] = new double[] { 0, 0, 1, 2 };
+        double x2s[] = new double[] { 2, 2, 0, 1 };
+        double ys[] = new double[] { 1, 2, 0, 0 };
+        double y2s[] = new double[] { 0, 1, 2, 2 };
+
+        for (int i = 0; i < 4; ++i) {
+            Line line = graphicEntityModule.createLine()
+                    .setX(convert(origX, cellSize, xs[i] - 0.5))
+                    .setX2(convert(origX, cellSize, x2s[i] + 0.5))
+                    .setY(convert(origY, cellSize, ys[i] - 0.5))
+                    .setY2(convert(origY, cellSize, y2s[i] + 0.5))
+                    .setLineWidth(lineWidth)
+                    .setLineColor(lineColor);
+            entity.add(line);
+        }
+    }
+
+    // TODO animate for move command
+    public void drawPlay(Action action) {
+        Sprite avatar = graphicEntityModule.createSprite()
+                .setX(convert(origX, cellSize, action.destCol))
+                .setY(convert(origY, cellSize, action.destRow))
+                .setImage(images[action.player.getIndex()])
+                .setBaseWidth((int) (0.8 * cellSize))
+                .setBaseHeight((int) (0.8 * cellSize))
+                .setTint(action.player.getColorToken())
+                .setAnchor(0.5);
+
+        // Animate arrival
+        avatar.setScale(0);
+        graphicEntityModule.commitEntityState(0.2, avatar);
+        avatar.setScale(1, Curve.ELASTIC);
+        graphicEntityModule.commitEntityState(1, avatar);
+
+        this.entity.add(avatar);
+    }
+
+    private int convert(int orig, int cellSize, double unit) {
+        return (int) (orig + unit * cellSize);
+    }
+
+    public void hide() {
+        this.entity.setAlpha(0);
+        this.entity.setVisible(false);
+    }
+
+    public void activate() {
+        this.entity.setAlpha(1, Curve.NONE);
+        graphicEntityModule.commitEntityState(1, entity);
+    }
+
+    public void deactivate() {
+        if (winner == 0) {
+            this.entity.setAlpha(0.5, Curve.NONE);
+            graphicEntityModule.commitEntityState(1, entity);
+        }
+    }
+}
