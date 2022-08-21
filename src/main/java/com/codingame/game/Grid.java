@@ -14,8 +14,8 @@ public class Grid {
 
     private String[] images = { "cross.png", "circle.png" };
 
-    private final int[] dr = {-1, 1, 0, 0};
-    private final int[] dc = {0, 0, -1, 1};
+    private final int[] dr = {-1, -1, 0, 1, 1, 1, 0, -1};
+    private final int[] dc = {0, -1, -1, -1, 0, 1, 1, 1};
 
     private Group entity;
 
@@ -64,9 +64,9 @@ public class Grid {
             grid[action.srcRow][action.srcCol] = 0;
         }
         grid[action.destRow][action.destCol] = index;
-        for (int dir = 0; dir < 4; dir++) {
-            int r = dest.r + dr[dir];
-            int c = dest.c + dc[dir];
+        for (int i = 0; i < 4; i++) {
+            int r = dest.r + dr[2*i];
+            int c = dest.c + dc[2*i];
             if (new Coordinate(r, c).isValid()) {
                 int index2 = grid[r][c];
                 if (index2 != 0 && index2 != index) {
@@ -82,21 +82,56 @@ public class Grid {
         return winner;
     }
 
+    //TODO fix these two functions for four invalid squares
     private int checkWinner() {
+        if (!checkTermination())
+            return 0;
         int counter1 = 0, counter2 = 0;
-        int totalSquare = Config.GRIDSIZE*Config.GRIDSIZE - 4;
         for (int i = 0; i < Config.GRIDSIZE; i++) {
             for (int j = 0; j < Config.GRIDSIZE; j++) {
-                if (grid[i][j] == 0)
-                    return 0;
-                else if (grid[i][j] == 1)
+                if (grid[i][j] == 1)
                     counter1++;
+                else if (grid[i][j] == 2)
+                    counter2++;
             }
         }
-        counter2 = totalSquare - counter1;
         if (counter1 > counter2)
             return 1;
         return 2;
+    }
+
+    private boolean checkTermination() {
+        int counter1 = 0;
+        int counter2 = 0;
+        for (int i = 0; i < Config.GRIDSIZE; i++) {
+            for (int j = 0; j < Config.GRIDSIZE; j++) {
+                for (int dir = 0; dir < 8; dir++) {
+                    int r = i + dr[dir];
+                    int c = i + dc[dir];
+                    if (new Coordinate(r, c).isValid() && grid[i][j] != 0) {
+                        if (grid[r][c] == 0 && grid[i][j] == 1) {
+                            counter1++;
+                        }
+                        else {
+                            counter2++;
+                        }
+                    }
+                }
+            }
+        }
+        if (counter1 == 0) {
+            for (int i = 0; i < Config.GRIDSIZE; i++)
+                for (int j = 0; j < Config.GRIDSIZE; j++)
+                    if (grid[i][j] == 0)
+                        grid[i][j] = 2;
+        }
+        else if (counter2 == 0) {
+            for (int i = 0; i < Config.GRIDSIZE; i++)
+                for (int j = 0; j < Config.GRIDSIZE; j++)
+                    if (grid[i][j] == 0)
+                        grid[i][j] = 1;
+        }
+        return counter1 == 0 || counter2 == 0;
     }
     //TODO figure out
     public void draw(int origX, int origY, int cellSize, int lineWidth, int lineColor) {

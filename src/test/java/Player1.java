@@ -1,37 +1,43 @@
+import com.codingame.game.CellState;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Player1 {
-    static class Action {
-        int row, col;
-        public Action(int row, int col) {
-            this.row = row;
-            this.col = col;
+    private static final int[] dr = {-1, -1, 0, 1, 1, 1, 0, -1};
+    private static final int[] dc = {0, -1, -1, -1, 0, 1, 1, 1};
+
+    private static int index = 0;
+    private static int[][] grid = new int[7][7];
+
+    //TODO
+    static void makeDecision() {
+        List<String> moves = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 7; j++) {
+
+            }
         }
     }
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         Random random = new Random(0);
+        index = in.nextInt();
 
         while (true) {
-            int opponentRow = in.nextInt();
-            int opponentCol = in.nextInt();
-            int validActionCount = in.nextInt();
-            List<Action> actions = new ArrayList<>(validActionCount);
+            int cellCount = in.nextInt();
 
-            for (int i = 0; i < validActionCount; i++) {
+            for (int i = 0; i < cellCount; i++) {
                 int row = in.nextInt();
                 int col = in.nextInt();
-                
-                actions.add(new Action(row, col));
+                int state = in.nextInt();
+                grid[row][col] = state;
             }
-            
-            Action a = actions.get(random.nextInt(actions.size()));
-           
-            System.out.println(String.format("%d %d", a.row, a.col));
+
+            makeDecision();
         }
     }
 }

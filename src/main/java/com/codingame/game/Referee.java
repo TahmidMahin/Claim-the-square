@@ -22,7 +22,6 @@ public class Referee extends AbstractReferee {
     @Inject private Provider<Grid> gridProvider;
 
     private Grid grid;
-    private List<Action> validActions;
     private List<CellState> cellStates;
     private Random random;
 
@@ -43,6 +42,13 @@ public class Referee extends AbstractReferee {
             gameManager.setMaxTurns(9 * 9);
         }
         cellStates = getCellStates();
+        sendInitialData();
+    }
+
+    void sendInitialData() {
+        for(Player player: gameManager.getPlayers()) {
+            player.sendInputLine(Integer.toString(player.getIndex() + 1));
+        }
     }
 
     private void drawBackground() {
@@ -131,7 +137,14 @@ public class Referee extends AbstractReferee {
     private void setWinner(Player player) {
         gameManager.addToGameSummary(GameManager.formatSuccessMessage(player.getNicknameToken() + " won!"));
         //TODO implement score calculation
-        player.setScore(10);
+        int score = 0;
+        for (int i = 0; i < Config.GRIDSIZE; i++) {
+            for (int j = 0; j < Config.GRIDSIZE; j++) {
+                if (grid.getGridState()[i][j] == player.getIndex() + 1)
+                    score++;
+            }
+        }
+        player.setScore(score);
         endGame();
     }
 
