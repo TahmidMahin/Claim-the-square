@@ -1,32 +1,53 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Player2 {
-    static class Action {
-        int row, col;
-        public Action(int row, int col) {
-            this.row = row;
-            this.col = col;
+    private static final int[] dr = {-1, -1, 0, 1, 1, 1, 0, -1};
+    private static final int[] dc = {0, -1, -1, -1, 0, 1, 1, 1};
+
+    private static int index = 0;
+    private static int[][] grid = new int[7][7];
+
+    //TODO
+    static void makeDecision() {
+        List<String> moves = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 7; j++) {
+                if (grid[i][j] == index) {
+                    for (int dir = 0; dir < 8; dir++) {
+                        int r = i + dr[dir];
+                        int c = j + dc[dir];
+                        if (grid[r][c] == 0 && dir%2 == 0) {
+                            moves.add(String.format("%d %d %s %d %d", i, j, "JUMP", r ,c));
+                        }
+                        else if (grid[r][c] == 0 && dir%2 == 1) {
+                            moves.add(String.format("%d %d %s %d %d", i, j, "REPL", r ,c));
+                        }
+                    }
+                }
+            }
         }
+        int position = new Random().nextInt(moves.size());
+        System.out.println(moves.get(position));
     }
-    
+
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        Random random = new Random(0);
+        index = in.nextInt();
 
         while (true) {
-            int opponentRow = in.nextInt();
-            int opponentCol = in.nextInt();
-            int validActionCount = in.nextInt();
+            int cellCount = in.nextInt();
 
-            int row = 0;
-            int col = 0;
-            for (int i = 0; i < validActionCount; i++) {
-                row = in.nextInt();
-                col = in.nextInt();
+            for (int i = 0; i < cellCount; i++) {
+                int row = in.nextInt();
+                int col = in.nextInt();
+                int state = in.nextInt();
+                grid[row][col] = state;
             }
-            
-            System.out.println(String.format("%d %d", row, col));
+
+            makeDecision();
         }
     }
 }

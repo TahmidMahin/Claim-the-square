@@ -4,8 +4,6 @@ import com.codingame.game.action.ActionType;
 import com.codingame.gameengine.module.entities.*;
 import com.google.inject.Inject;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.codingame.game.action.Action;
 
 public class Grid {
@@ -25,6 +23,29 @@ public class Grid {
     private int[][] grid = new int[Config.GRIDSIZE][Config.GRIDSIZE];
     protected int winner = 0;
 
+    public Grid() {
+        init();
+    }
+
+    public void init() {
+        for (int i = 0; i < Config.GRIDSIZE; i++) {
+            for (int j = 0; j < Config.GRIDSIZE; j++) {
+                grid[i][j] = 0;
+            }
+        }
+        // Initial player positions
+        grid[1][1] = 1;
+        grid[1][5] = 2;
+        grid[5][1] = 2;
+        grid[5][5] = 1;
+
+        // Blocked cells;
+        grid[2][2] = -1;
+        grid[2][4] = -1;
+        grid[4][2] = -1;
+        grid[4][4] = -1;
+    }
+
     public int[][] getGridState() {
         if(winner == 0)
             return grid;
@@ -32,8 +53,8 @@ public class Grid {
     }
 
     public int play(Action action) throws InvalidAction {
-        Coordinate src = new Coordinate(action.srcRow, action. srcCol);
-        Coordinate dest = new Coordinate(action.destRow, action.destCol);
+        Cell src = new Cell(action.srcRow, action. srcCol);
+        Cell dest = new Cell(action.destRow, action.destCol);
         ActionType actionType = action.actionType;
         int index = action.player.getIndex() + 1;
 
@@ -42,6 +63,9 @@ public class Grid {
         }
         else if (!dest.isValid()) {
             throw new InvalidAction("Destination position is outside of the grid");
+        }
+        else if (grid[dest.r][dest.c] == -1) {
+            throw new InvalidAction("Destination position is blocked");
         }
         else if (grid[action.srcCol][action.srcRow] != index) {
             throw new InvalidAction("Source position does not contain player's piece");
@@ -53,36 +77,33 @@ public class Grid {
             throw new InvalidAction("Invalid command");
         }
         else if (actionType == ActionType.REPL && !src.isDiagonal(dest)) {
-            throw new InvalidAction("Invalid move!");
+            throw new InvalidAction("Invalid move");
         }
         else if (actionType == ActionType.JUMP && !src.isAdjacent(dest)) {
-            throw new InvalidAction("Invalid move!");
+            throw new InvalidAction("Invalid move");
         }
 
         // update grid
-        if (actionType != ActionType.REPL) {
+        if (actionType == ActionType.JUMP) {
             grid[action.srcRow][action.srcCol] = 0;
         }
         grid[action.destRow][action.destCol] = index;
         for (int i = 0; i < 4; i++) {
             int r = dest.r + dr[2*i];
             int c = dest.c + dc[2*i];
-            if (new Coordinate(r, c).isValid()) {
+            if (new Cell(r, c).isValid()) {
                 int index2 = grid[r][c];
-                if (index2 != 0 && index2 != index) {
+                if (index2 > 0 && index2 != index) {
                     grid[r][c] = index;
                 }
             }
         }
-
-        //TODO implement flood-fill to find reachability
 
         winner = checkWinner();
         drawPlay(action);
         return winner;
     }
 
-    //TODO fix these two functions for four invalid squares
     private int checkWinner() {
         if (!checkTermination())
             return 0;
@@ -108,7 +129,7 @@ public class Grid {
                 for (int dir = 0; dir < 8; dir++) {
                     int r = i + dr[dir];
                     int c = i + dc[dir];
-                    if (new Coordinate(r, c).isValid() && grid[i][j] != 0) {
+                    if (new Cell(r, c).isValid() && grid[i][j] > 0) {
                         if (grid[r][c] == 0 && grid[i][j] == 1) {
                             counter1++;
                         }
@@ -119,12 +140,14 @@ public class Grid {
                 }
             }
         }
+        // Fill remaining empty cells with player 2
         if (counter1 == 0) {
             for (int i = 0; i < Config.GRIDSIZE; i++)
                 for (int j = 0; j < Config.GRIDSIZE; j++)
                     if (grid[i][j] == 0)
                         grid[i][j] = 2;
         }
+        // Fill remaining empty cells with player 1
         else if (counter2 == 0) {
             for (int i = 0; i < Config.GRIDSIZE; i++)
                 for (int j = 0; j < Config.GRIDSIZE; j++)
@@ -133,7 +156,6 @@ public class Grid {
         }
         return counter1 == 0 || counter2 == 0;
     }
-    //TODO figure out
     public void draw(int origX, int origY, int cellSize, int lineWidth, int lineColor) {
         this.origX = origX;
         this.origY = origY;

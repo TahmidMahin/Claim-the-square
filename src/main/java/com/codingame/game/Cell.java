@@ -1,18 +1,26 @@
 package com.codingame.game;
 
-public class Coordinate {
+public class Cell {
     // 1, 3, 5, 7 are diagonals
     private final int[] dr = {-1, -1, 0, 1, 1, 1, 0, -1};
     private final int[] dc = {0, -1, -1, -1, 0, 1, 1, 1};
     public final int r;
     public final int c;
 
-    public Coordinate(int r, int c) {
+    public int state = 0;
+
+    public Cell(int r, int c) {
         this.r = r;
         this.c = c;
     }
 
-    public boolean equals(Coordinate p) {
+    public Cell(int r, int c, int state) {
+        this.r = r;
+        this.c = c;
+        this.state = state;
+    }
+
+    public boolean equals(Cell p) {
         return r == p.r && c == p.c;
     }
 
@@ -20,21 +28,21 @@ public class Coordinate {
         return (r >= 0 && r < Config.GRIDSIZE && c >= 0 && c < Config.GRIDSIZE);
     }
 
-    public boolean isDiagonal(Coordinate p) {
+    public boolean isDiagonal(Cell p) {
         if (!p.isValid())
             return false;
         for (int i = 0; i < 4; i++) {
-            if (p.equals(new Coordinate(r + dr[2*i + 1], c + dc[2*i + 1])))
+            if (p.equals(new Cell(r + dr[2*i + 1], c + dc[2*i + 1])))
                 return true;
         }
         return false;
     }
 
-    public boolean isAdjacent(Coordinate p) {
+    public boolean isAdjacent(Cell p) {
         if (!p.isValid())
             return false;
         for (int i = 0; i < 4; i++) {
-            if (p.equals(new Coordinate(r + dr[2*i], c + dc[2*i])))
+            if (p.equals(new Cell(r + dr[2*i], c + dc[2*i])))
                 return true;
         }
         return false;
@@ -42,6 +50,6 @@ public class Coordinate {
 
     @Override
     public String toString() {
-        return r + " " + c;
+        return r + " " + c + " " + state;
     }
 }

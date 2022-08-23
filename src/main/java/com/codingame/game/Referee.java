@@ -1,7 +1,6 @@
 package com.codingame.game;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -22,7 +21,7 @@ public class Referee extends AbstractReferee {
     @Inject private Provider<Grid> gridProvider;
 
     private Grid grid;
-    private List<CellState> cellStates;
+    private List<Cell> cells;
     private Random random;
 
     // TODO import these parameters from CONFIG
@@ -35,13 +34,9 @@ public class Referee extends AbstractReferee {
         drawGrids();
 
         gameManager.setFrameDuration(600);
+        gameManager.setMaxTurns(300);
 
-        if (gameManager.getLeagueLevel() == 1) {
-            gameManager.setMaxTurns(9);
-        } else {
-            gameManager.setMaxTurns(9 * 9);
-        }
-        cellStates = getCellStates();
+        cells = getCells();
         sendInitialData();
     }
 
@@ -67,7 +62,7 @@ public class Referee extends AbstractReferee {
                 .setAnchor(0.5);
     }
 
-    //TODO import parameter from CONFIG
+    //TODO import parameters from CONFIG
     private void drawGrids() {
         int bigCellSize = 240;
         int bigOrigX = (int) Math.round(1920 / 2 - bigCellSize);
@@ -82,7 +77,7 @@ public class Referee extends AbstractReferee {
             .setY(1080 / 2)
             .setAnchor(0.5);
     }
-    // TODO import these parameters from CONFIG
+    // TODO import parameters from CONFIG
     private void drawHud() {
         for (Player player : gameManager.getPlayers()) {
             int x = player.getIndex() == 0 ? 280 : 1920 - 280;
@@ -127,16 +122,15 @@ public class Referee extends AbstractReferee {
         }
     }
 
-    private void sendInputs(Player player, List<CellState> cellStates) {
-        player.sendInputLine((Integer.toString(cellStates.size())));
-        for (CellState cellState : cellStates) {
-            player.sendInputLine(cellState.toString());
+    private void sendInputs(Player player, List<Cell> cells) {
+        player.sendInputLine((Integer.toString(cells.size())));
+        for (Cell cell : cells) {
+            player.sendInputLine(cell.toString());
         }
     }
 
     private void setWinner(Player player) {
         gameManager.addToGameSummary(GameManager.formatSuccessMessage(player.getNicknameToken() + " won!"));
-        //TODO implement score calculation
         int score = 0;
         for (int i = 0; i < Config.GRIDSIZE; i++) {
             for (int j = 0; j < Config.GRIDSIZE; j++) {
@@ -148,21 +142,21 @@ public class Referee extends AbstractReferee {
         endGame();
     }
 
-    private List<CellState> getCellStates() {
-        List<CellState> cellStates = new ArrayList<>();
+    private List<Cell> getCells() {
+        List<Cell> cells = new ArrayList<>();
         int[][] gridState = grid.getGridState();
         for (int i = 0; i < Config.GRIDSIZE; i++) {
             for (int j = 0; j < Config.GRIDSIZE; j++) {
-                cellStates.add(new CellState(new Coordinate(i, j), gridState[i][j]));
+                cells.add(new Cell(i, j, gridState[i][j]));
             }
         }
-        return cellStates;
+        return cells;
     }
 
     @Override
     public void gameTurn(int turn) {
         Player player = gameManager.getPlayer(turn % gameManager.getPlayerCount());
-        sendInputs(player, cellStates);
+        sendInputs(player, cells);
         player.execute();
 
         // Read inputs
@@ -176,8 +170,8 @@ public class Referee extends AbstractReferee {
                 setWinner(player);
             }
 
-            cellStates = getCellStates();
-            if (cellStates.isEmpty()) {
+            cells = getCells();
+            if (cells.isEmpty()) {
                 endGame();
             }
         } catch (NumberFormatException e) {
