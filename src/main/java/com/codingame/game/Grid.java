@@ -9,6 +9,7 @@ import com.codingame.game.action.Action;
 public class Grid {
     @Inject
     private GraphicEntityModule graphicEntityModule;
+    private Sprite[][] spriteMap = new Sprite[Config.GRIDSIZE][Config.GRIDSIZE];
 
     private String[] images = { "cross.png", "circle.png" };
 
@@ -47,9 +48,7 @@ public class Grid {
     }
 
     public int[][] getGridState() {
-        if(winner == 0)
-            return grid;
-        return null;
+        return grid;
     }
 
     public int play(Action action) throws InvalidAction {
@@ -67,7 +66,7 @@ public class Grid {
         else if (grid[dest.r][dest.c] == -1) {
             throw new InvalidAction("Destination position is blocked");
         }
-        else if (grid[action.srcCol][action.srcRow] != index) {
+        else if (grid[action.srcRow][action.srcCol] != index) {
             throw new InvalidAction("Source position does not contain player's piece");
         }
         else if (grid[action.destRow][action.destCol] != 0) {
@@ -156,47 +155,96 @@ public class Grid {
         }
         return counter1 == 0 || counter2 == 0;
     }
+
     public void draw(int origX, int origY, int cellSize, int lineWidth, int lineColor) {
         this.origX = origX;
         this.origY = origY;
         this.cellSize = cellSize;
         this.entity = graphicEntityModule.createGroup();
-
-        double xs[] = new double[] { 0, 0, 1, 2 };
-        double x2s[] = new double[] { 2, 2, 0, 1 };
-        double ys[] = new double[] { 1, 2, 0, 0 };
-        double y2s[] = new double[] { 0, 1, 2, 2 };
-
-        for (int i = 0; i < 4; ++i) {
-            Line line = graphicEntityModule.createLine()
-                    .setX(convert(origX, cellSize, xs[i] - 0.5))
-                    .setX2(convert(origX, cellSize, x2s[i] + 0.5))
-                    .setY(convert(origY, cellSize, ys[i] - 0.5))
-                    .setY2(convert(origY, cellSize, y2s[i] + 0.5))
-                    .setLineWidth(lineWidth)
-                    .setLineColor(lineColor);
-            entity.add(line);
-        }
     }
 
     // TODO animate for move command
     public void drawPlay(Action action) {
-        Sprite avatar = graphicEntityModule.createSprite()
-                .setX(convert(origX, cellSize, action.destCol))
-                .setY(convert(origY, cellSize, action.destRow))
-                .setImage(images[action.player.getIndex()])
-                .setBaseWidth((int) (0.8 * cellSize))
-                .setBaseHeight((int) (0.8 * cellSize))
-                .setTint(action.player.getColorToken())
-                .setAnchor(0.5);
 
-        // Animate arrival
-        avatar.setScale(0);
-        graphicEntityModule.commitEntityState(0.2, avatar);
-        avatar.setScale(1, Curve.ELASTIC);
-        graphicEntityModule.commitEntityState(1, avatar);
+        if(action.actionType == ActionType.REPL)
+        {
+            Sprite avatar = graphicEntityModule.createSprite()
+                    .setX(convert(origX, cellSize, action.destCol))
+                    .setY(convert(origY, cellSize, action.destRow))
+                    .setImage(images[1])
+                    .setBaseWidth((int) (0.8 * cellSize))
+                    .setBaseHeight((int) (0.8 * cellSize))
+                    .setTint(action.player.getColorToken())
+                    .setAnchor(0.5);
+            spriteMap[action.destRow][action.destCol] = avatar;
 
-        this.entity.add(avatar);
+
+            // Animate arrival
+            avatar.setScale(0);
+            graphicEntityModule.commitEntityState(0.2, avatar);
+            avatar.setScale(1, Curve.ELASTIC);
+            graphicEntityModule.commitEntityState(1, avatar);
+            this.entity.add(avatar);
+            for (int i = 0; i < 4; i++) {
+                int r = action.destRow + dr[2*i];
+                int c = action.destCol + dc[2*i];
+                if (r>=0  && r< Config.GRIDSIZE && c>=0 && c< Config.GRIDSIZE && spriteMap[r][c] != null)
+                {
+                    spriteMap[r][c].setTint(action.player.getColorToken());
+                }
+            }
+        }
+        else if(action.actionType == ActionType.JUMP)
+        {
+            if(spriteMap[action.srcRow][action.srcCol] == null)
+            {
+                System.err.println("IS NULL");
+                Sprite avatar = graphicEntityModule.createSprite()
+                        .setX(convert(origX, cellSize, action.destCol))
+                        .setY(convert(origY, cellSize, action.destRow))
+                        .setImage(images[1])
+                        .setBaseWidth((int) (0.8 * cellSize))
+                        .setBaseHeight((int) (0.8 * cellSize))
+                        .setTint(action.player.getColorToken())
+                        .setAnchor(0.5);
+                spriteMap[action.destRow][action.destCol] = avatar;
+                spriteMap[action.srcRow][action.srcCol] = null;
+
+                // Animate arrival
+                avatar.setScale(0);
+                graphicEntityModule.commitEntityState(0.2, avatar);
+                avatar.setScale(1, Curve.ELASTIC);
+                graphicEntityModule.commitEntityState(1, avatar);
+                this.entity.add(avatar);
+                for (int i = 0; i < 4; i++) {
+                    int r = action.destRow + dr[2*i];
+                    int c = action.destCol + dc[2*i];
+                    if (spriteMap[r][c] != null)
+                    {
+                        spriteMap[r][c].setTint(action.player.getColorToken());
+                    }
+                }
+//                this.entity.add(avatar);
+            }
+            else {
+                Sprite avatar = spriteMap[action.srcRow][action.srcCol];
+                spriteMap[action.destRow][action.destCol] = avatar;
+                spriteMap[action.srcRow][action.srcCol] = null;
+                avatar.setX(convert(origX, cellSize, action.destCol))
+                        .setY(convert(origY, cellSize, action.destRow));
+
+                for (int i = 0; i < 4; i++) {
+                    int r = action.destRow + dr[2*i];
+                    int c = action.destCol + dc[2*i];
+                    if (r>=0  && r< Config.GRIDSIZE && c>=0 && c< Config.GRIDSIZE && spriteMap[r][c] != null)
+                    {
+                        spriteMap[r][c].setTint(action.player.getColorToken());
+                    }
+                }
+//                this.entity.add(avatar);
+            }
+        }
+
     }
 
     private int convert(int orig, int cellSize, double unit) {
