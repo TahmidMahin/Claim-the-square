@@ -19,10 +19,10 @@ public class Player2 {
                     for (int dir = 0; dir < 8; dir++) {
                         int r = i + dr[dir];
                         int c = j + dc[dir];
-                        if (grid[r][c] == 0 && dir%2 == 0) {
+                        if (r >= 0 && r < 7 && c >= 0 && c < 7 && grid[r][c] == 0 && dir%2 == 0) {
                             moves.add(String.format("%d %d %s %d %d", i, j, "JUMP", r ,c));
                         }
-                        else if (grid[r][c] == 0 && dir%2 == 1) {
+                        else if (r >= 0 && r < 7 && c >= 0 && c < 7 && grid[r][c] == 0 && dir%2 == 1) {
                             moves.add(String.format("%d %d %s %d %d", i, j, "REPL", r ,c));
                         }
                     }

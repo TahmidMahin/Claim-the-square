@@ -1,6 +1,9 @@
 package com.codingame.game.action;
 
+import com.codingame.game.Config;
 import com.codingame.game.Player;
+import com.codingame.gameengine.module.entities.GraphicEntityModule;
+import com.codingame.gameengine.module.entities.Sprite;
 
 public class Action {
     public Player player;

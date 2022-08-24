@@ -9,7 +9,7 @@ export const demo = {
     name: 'Alice',
     avatar: 'https://www.codingame.com/servlet/fileservlet?id=' + 16085713250612 + '&format=viewer_avatar',
     type: 'CODINGAMER',
-    color: '#f9b700',
+    color: '#88E079',
     typeData: {
       me: true,
       nickname: '[CG]Nonofr'
@@ -19,7 +19,7 @@ export const demo = {
     name: 'Bob',
     avatar: 'https://www.codingame.com/servlet/fileservlet?id=' + 16085756802960 + '&format=viewer_avatar',
     type: 'CODINGAMER',
-    color: '#22a1e4',
+    color: '#ff9d5c',
     typeData: {
       me: true,
       nickname: '[CG]Maxime'
@@ -92,8 +92,8 @@ export const demo = {
 };
 
 export const playerColors = [
-  '#f2b213', // yellow
-  '#22a1e4' // curious blue
+  '#88E079', // Green
+  '#ff9d5c' // Orange
 ];
 
 export const modules = [

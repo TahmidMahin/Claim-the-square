@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.codingame.game.action.ActionType;
 import com.codingame.gameengine.core.AbstractPlayer.TimeoutException;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.GameManager;
@@ -32,12 +33,16 @@ public class Referee extends AbstractReferee {
         drawBackground();
         drawHud();
         drawGrids();
+        drawPieces();
 
         gameManager.setFrameDuration(600);
         gameManager.setMaxTurns(300);
 
         cells = getCells();
         sendInitialData();
+    }
+
+    private void drawPieces() {
     }
 
     void sendInitialData() {
@@ -64,11 +69,11 @@ public class Referee extends AbstractReferee {
 
     //TODO import parameters from CONFIG
     private void drawGrids() {
-        int bigCellSize = 240;
-        int bigOrigX = (int) Math.round(1920 / 2 - bigCellSize);
-        int bigOrigY = (int) Math.round(1080 / 2 - bigCellSize);
+        int bigCellSize = 100;
+        int bigOrigX = (int) Math.round(1920/4 + 178);
+        int bigOrigY = (int) Math.round(1080/4 - 20);
         grid = gridProvider.get();
-        grid.draw(bigOrigX, bigOrigY, bigCellSize, 5, 0xf9b700);
+//        grid.draw(bigOrigX, bigOrigY, bigCellSize, 5, 0xf9b700);
 
         graphicEntityModule
             .createSprite()
@@ -76,6 +81,15 @@ public class Referee extends AbstractReferee {
             .setX(1920 / 2)
             .setY(1080 / 2)
             .setAnchor(0.5);
+        grid.draw(bigOrigX, bigOrigY, bigCellSize, 5, 0xf9b700);
+        grid.drawPlay(new Action(gameManager.getPlayer(0),
+                1, 1, "REPL", 1, 1));
+        grid.drawPlay(new Action(gameManager.getPlayer(0),
+                5, 5, "REPL", 5, 5));
+        grid.drawPlay(new Action(gameManager.getPlayer(1),
+                5, 1, "REPL", 1, 5));
+        grid.drawPlay(new Action(gameManager.getPlayer(1),
+                5, 1, "REPL", 5, 1));
     }
     // TODO import parameters from CONFIG
     private void drawHud() {
@@ -164,7 +178,6 @@ public class Referee extends AbstractReferee {
             final Action action = player.getAction();
             gameManager.addToGameSummary(String.format("Player %s played (%d %d %s %d %d)",
                     action.player.getNicknameToken(), action.srcRow, action.srcCol, action.actionType, action.destRow, action.destCol));
-
             int winner = grid.play(action);
             if (winner != 0) {
                 setWinner(player);
