@@ -163,7 +163,6 @@ public class Grid {
         this.entity = graphicEntityModule.createGroup();
     }
 
-    // TODO animate for move command
     public void drawPlay(Action action) {
 
         if(action.actionType == ActionType.REPL)

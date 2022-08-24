@@ -1,16 +1,15 @@
+read playerIndex:int
 gameloop
-read opponentRow:int opponentCol:int
-read validActionCount:int
-loop validActionCount read row:int col:int
-write 0 0
-
-STATEMENT
-Get 3 cells in a row!
+read cellCount:int
+loop cellCount read row:int col:int state:int
+write join(0, 0, "JUMP", 1, 1)
 
 INPUT
-opponentRow: The coordinates of your opponent's last move
-validActionCount: the number of possible actions for your next move
-row: The coordinates of a possible next move
+playerIndex: Index of the player in the grid
+cellCount: Number of cells
+row: Row number in the grid
+col: Column number in the grid
+state: State of a cell. (-1 = blocked cell, 0 = empty cell, 1 = player1, 2 = player2)
 
 OUTPUT
-<row> <column>
+srcRow srcCol JUMP/REPL destRow destCol
