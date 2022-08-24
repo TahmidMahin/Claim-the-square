@@ -13,8 +13,12 @@ public class Player extends AbstractMultiplayerPlayer {
         return 1;
     }
 
-    public Action getAction() throws TimeoutException, NumberFormatException {
+    public Action getAction() throws TimeoutException, NumberFormatException, InvalidAction {
         String[] output = getOutputs().get(0).split(" ");
+        if (output.length < 5)
+            throw new InvalidAction("Too few arguments");
+        else if (output.length > 5)
+            throw new InvalidAction("Too many arguments");
         return new Action(this,
                 Integer.parseInt(output[0]),
                 Integer.parseInt(output[1]),

@@ -10,7 +10,6 @@ public class Player1 {
     private static int index = 0;
     private static int[][] grid = new int[7][7];
 
-    //TODO
     static void makeDecision() {
         List<String> moves = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
