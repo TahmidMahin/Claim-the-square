@@ -11,7 +11,7 @@ public class Grid {
     private GraphicEntityModule graphicEntityModule;
     private Sprite[][] spriteMap = new Sprite[Config.GRIDSIZE][Config.GRIDSIZE];
 
-    private String[] images = { "cross.png", "circle.png" };
+    private String[] images = { "pieces.png", "circle.png" };
 
     private final int[] dr = {-1, -1, 0, 1, 1, 1, 0, -1};
     private final int[] dc = {0, -1, -1, -1, 0, 1, 1, 1};
@@ -143,15 +143,20 @@ public class Grid {
         if (counter1 == 0) {
             for (int i = 0; i < Config.GRIDSIZE; i++)
                 for (int j = 0; j < Config.GRIDSIZE; j++)
-                    if (grid[i][j] == 0)
+                    if (grid[i][j] == 0) {
                         grid[i][j] = 2;
+                        spriteMap[i][j] = drawPiece(i, j, 1);
+                    }
         }
         // Fill remaining empty cells with player 1
         else if (counter2 == 0) {
             for (int i = 0; i < Config.GRIDSIZE; i++)
                 for (int j = 0; j < Config.GRIDSIZE; j++)
-                    if (grid[i][j] == 0)
+                    if (grid[i][j] == 0) {
                         grid[i][j] = 1;
+                        spriteMap[i][j] = drawPiece(i, j, 0);
+                    }
+
         }
         return counter1 == 0 || counter2 == 0;
     }
@@ -161,6 +166,29 @@ public class Grid {
         this.origY = origY;
         this.cellSize = cellSize;
         this.entity = graphicEntityModule.createGroup();
+    }
+
+    public Sprite drawPiece(int row, int col, int playerIndex)
+    {
+        int color = 0xFFFFFF;
+        if(playerIndex == 0)
+        {
+            color = 0x88E079;
+        }
+        else
+        {
+            color = 0xff9d5c;
+        }
+        System.err.println("DRAWING");
+        Sprite avatar = graphicEntityModule.createSprite()
+                .setX(convert(origX, cellSize, row))
+                .setY(convert(origY, cellSize, col))
+                .setImage(images[1])
+                .setBaseWidth((int) (0.8 * cellSize))
+                .setBaseHeight((int) (0.8 * cellSize))
+                .setTint(color)
+                .setAnchor(0.5);
+        return avatar;
     }
 
     public void drawPlay(Action action) {
@@ -264,6 +292,18 @@ public class Grid {
         if (winner == 0) {
             this.entity.setAlpha(0.5, Curve.NONE);
             graphicEntityModule.commitEntityState(1, entity);
+        }
+    }
+
+    public void print()
+    {
+        for(int i=0; i<Config.GRIDSIZE; i++)
+        {
+            for (int j=0; j<Config.GRIDSIZE; j++)
+            {
+                System.err.print(grid[i][j]);
+            }
+            System.err.println("");
         }
     }
 }

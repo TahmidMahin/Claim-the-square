@@ -10,6 +10,7 @@ import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.GameManager;
 import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
+import com.codingame.gameengine.module.entities.Rectangle;
 import com.codingame.gameengine.module.entities.Sprite;
 import com.codingame.gameengine.module.entities.Text;
 import com.google.inject.Inject;
@@ -33,7 +34,6 @@ public class Referee extends AbstractReferee {
         drawBackground();
         drawHud();
         drawGrids();
-        drawPieces();
 
         gameManager.setFrameDuration(600);
         gameManager.setMaxTurns(300);
@@ -42,8 +42,6 @@ public class Referee extends AbstractReferee {
         sendInitialData();
     }
 
-    private void drawPieces() {
-    }
 
     void sendInitialData() {
         for(Player player: gameManager.getPlayers()) {
@@ -57,13 +55,15 @@ public class Referee extends AbstractReferee {
                 .setAnchor(0);
         graphicEntityModule.createSprite()
                 .setImage("logo.png")
-                .setX(280)
-                .setY(915)
+                .setX(1920/2)
+                .setY(120)
+                .setScale(3)
                 .setAnchor(0.5);
         graphicEntityModule.createSprite()
-                .setImage("logoCG.png")
-                .setX(1920 - 280)
-                .setY(915)
+                .setImage("logoCGv1.png")
+                .setX(1920 - 183)
+                .setY(1080-50)
+                .setScale(2)
                 .setAnchor(0.5);
     }
 
@@ -71,7 +71,7 @@ public class Referee extends AbstractReferee {
     private void drawGrids() {
         int bigCellSize = 100;
         int bigOrigX = (int) Math.round(1920/4 + 178);
-        int bigOrigY = (int) Math.round(1080/4 - 20);
+        int bigOrigY = (int) Math.round(1080/4 - 20 + 100);
         grid = gridProvider.get();
 //        grid.draw(bigOrigX, bigOrigY, bigCellSize, 5, 0xf9b700);
 
@@ -79,7 +79,7 @@ public class Referee extends AbstractReferee {
             .createSprite()
             .setImage("board_border.png")
             .setX(1920 / 2)
-            .setY(1080 / 2)
+            .setY(1080 / 2 + 100)
             .setAnchor(0.5);
         grid.draw(bigOrigX, bigOrigY, bigCellSize, 5, 0xf9b700);
         grid.drawPlay(new Action(gameManager.getPlayer(0),
@@ -95,7 +95,7 @@ public class Referee extends AbstractReferee {
     private void drawHud() {
         for (Player player : gameManager.getPlayers()) {
             int x = player.getIndex() == 0 ? 280 : 1920 - 280;
-            int y = 220;
+            int y = 420;
 
             graphicEntityModule
                     .createRectangle()
@@ -106,7 +106,7 @@ public class Referee extends AbstractReferee {
                     .setLineWidth(0)
                     .setFillColor(player.getColorToken());
 
-            graphicEntityModule
+            Rectangle rectangle = graphicEntityModule
                     .createRectangle()
                     .setWidth(120)
                     .setHeight(120)
@@ -201,6 +201,7 @@ public class Referee extends AbstractReferee {
             player.setScore(-1);
             endGame();
         }
+        grid.print();
     }
 
     private void endGame() {
