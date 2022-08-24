@@ -29,6 +29,7 @@ public class Player2 {
             }
         }
         int position = new Random().nextInt(moves.size());
+        System.err.println("Player 2: "+position);
         System.out.println(moves.get(position));
     }
 

@@ -201,7 +201,7 @@ public class Referee extends AbstractReferee {
             player.setScore(-1);
             endGame();
         }
-        grid.print();
+//        grid.print();
     }
 
     private void endGame() {

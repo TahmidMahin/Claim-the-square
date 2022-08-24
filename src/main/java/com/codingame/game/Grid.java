@@ -127,7 +127,7 @@ public class Grid {
             for (int j = 0; j < Config.GRIDSIZE; j++) {
                 for (int dir = 0; dir < 8; dir++) {
                     int r = i + dr[dir];
-                    int c = i + dc[dir];
+                    int c = j + dc[dir];
                     if (new Cell(r, c).isValid() && grid[i][j] > 0) {
                         if (grid[r][c] == 0 && grid[i][j] == 1) {
                             counter1++;
@@ -179,11 +179,11 @@ public class Grid {
         {
             color = 0xff9d5c;
         }
-        System.err.println("DRAWING");
+//        System.err.println("DRAWING");
         Sprite avatar = graphicEntityModule.createSprite()
-                .setX(convert(origX, cellSize, row))
-                .setY(convert(origY, cellSize, col))
-                .setImage(images[1])
+                .setX(convert(origX, cellSize, col))
+                .setY(convert(origY, cellSize, row))
+                .setImage(images[0])
                 .setBaseWidth((int) (0.8 * cellSize))
                 .setBaseHeight((int) (0.8 * cellSize))
                 .setTint(color)
@@ -198,7 +198,7 @@ public class Grid {
             Sprite avatar = graphicEntityModule.createSprite()
                     .setX(convert(origX, cellSize, action.destCol))
                     .setY(convert(origY, cellSize, action.destRow))
-                    .setImage(images[1])
+                    .setImage(images[0])
                     .setBaseWidth((int) (0.8 * cellSize))
                     .setBaseHeight((int) (0.8 * cellSize))
                     .setTint(action.player.getColorToken())
@@ -229,7 +229,7 @@ public class Grid {
                 Sprite avatar = graphicEntityModule.createSprite()
                         .setX(convert(origX, cellSize, action.destCol))
                         .setY(convert(origY, cellSize, action.destRow))
-                        .setImage(images[1])
+                        .setImage(images[0])
                         .setBaseWidth((int) (0.8 * cellSize))
                         .setBaseHeight((int) (0.8 * cellSize))
                         .setTint(action.player.getColorToken())
