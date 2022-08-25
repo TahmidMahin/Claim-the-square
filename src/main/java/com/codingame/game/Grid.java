@@ -191,8 +191,22 @@ public class Grid {
         return avatar;
     }
 
-    public void drawPlay(Action action) {
+    public int getPlayerScore(int playerIndex){
+        int score = 0;
+        for(int i=0; i<Config.GRIDSIZE; i++)
+        {
+            for (int j=0; j<Config.GRIDSIZE; j++)
+            {
+                if(grid[i][j] == playerIndex + 1)
+                {
+                    score++;
+                }
+            }
+        }
+        return score;
+    }
 
+    public void drawPlay(Action action) {
         if(action.actionType == ActionType.REPL)
         {
             Sprite avatar = graphicEntityModule.createSprite()
@@ -268,7 +282,7 @@ public class Grid {
                         spriteMap[r][c].setTint(action.player.getColorToken());
                     }
                 }
-//                this.entity.add(avatar);
+
             }
         }
 
@@ -306,4 +320,6 @@ public class Grid {
             System.err.println("");
         }
     }
+
+
 }
