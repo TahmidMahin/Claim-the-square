@@ -25,6 +25,7 @@ public class Referee extends AbstractReferee {
     private Grid grid;
     private List<Cell> cells;
     private Random random;
+    private Text[] playerScore = new Text[2];
 
     // TODO import these parameters from CONFIG
     @Override
@@ -34,6 +35,7 @@ public class Referee extends AbstractReferee {
         drawBackground();
         drawHud();
         drawGrids();
+        drawScoreBoard();
 
         gameManager.setFrameDuration(600);
         gameManager.setMaxTurns(300);
@@ -91,6 +93,27 @@ public class Referee extends AbstractReferee {
         grid.drawPlay(new Action(gameManager.getPlayer(1),
                 5, 1, "REPL", 5, 1));
     }
+
+    public void drawScoreBoard()
+    {
+        for (Player player : gameManager.getPlayers()) {
+            int x = player.getIndex() == 0 ? 280 : 1920 - 280;
+            int y = 420;
+            playerScore[player.getIndex()] = graphicEntityModule.createText("Score: 2")
+                    .setX(x)
+                    .setY(y + 120 + 100)
+                    .setZIndex(20)
+                    .setFontSize(70)
+                    .setFillColor(player.getColorToken())
+                    .setAnchor(0.5);
+        }
+    }
+
+    public void updateScoreHUD(int score, int playerIndex)
+    {
+        playerScore[playerIndex].setText("Score : " + score);
+    }
+
     // TODO import parameters from CONFIG
     private void drawHud() {
         for (Player player : gameManager.getPlayers()) {
@@ -183,7 +206,6 @@ public class Referee extends AbstractReferee {
             if (winner != 0) {
                 setWinner(gameManager.getPlayer(winner - 1));
             }
-
             cells = getCells();
         } catch (NumberFormatException e) {
             player.deactivate("Wrong output!");
@@ -199,6 +221,11 @@ public class Referee extends AbstractReferee {
             player.setScore(-1);
             endGame();
         }
+        int score = grid.getPlayerScore(0);
+        updateScoreHUD(score,0);
+
+        score = grid.getPlayerScore(1);
+        updateScoreHUD(score,1);
     }
 
     private void endGame() {

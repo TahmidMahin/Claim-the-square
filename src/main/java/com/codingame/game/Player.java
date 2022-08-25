@@ -7,6 +7,7 @@ import com.codingame.gameengine.module.entities.Group;
 
 public class Player extends AbstractMultiplayerPlayer {
     public Group hud;
+    public int score = 0;
     
     @Override
     public int getExpectedOutputLines() {
