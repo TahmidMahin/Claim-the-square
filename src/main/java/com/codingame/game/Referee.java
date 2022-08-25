@@ -38,7 +38,7 @@ public class Referee extends AbstractReferee {
         drawScoreBoard();
 
         gameManager.setFrameDuration(600);
-        gameManager.setMaxTurns(300);
+        gameManager.setMaxTurns(200);
 
         cells = getCells();
         sendInitialData();
