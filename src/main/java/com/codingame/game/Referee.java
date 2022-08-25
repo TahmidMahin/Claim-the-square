@@ -179,14 +179,12 @@ public class Referee extends AbstractReferee {
             gameManager.addToGameSummary(String.format("Player %s played (%d %d %s %d %d)",
                     action.player.getNicknameToken(), action.srcRow, action.srcCol, action.actionType, action.destRow, action.destCol));
             int winner = grid.play(action);
+
             if (winner != 0) {
-                setWinner(player);
+                setWinner(gameManager.getPlayer(winner - 1));
             }
 
             cells = getCells();
-            if (cells.isEmpty()) {
-                endGame();
-            }
         } catch (NumberFormatException e) {
             player.deactivate("Wrong output!");
             player.setScore(-1);
@@ -201,7 +199,6 @@ public class Referee extends AbstractReferee {
             player.setScore(-1);
             endGame();
         }
-//        grid.print();
     }
 
     private void endGame() {

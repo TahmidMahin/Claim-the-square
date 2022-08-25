@@ -132,7 +132,7 @@ public class Grid {
                         if (grid[r][c] == 0 && grid[i][j] == 1) {
                             counter1++;
                         }
-                        else {
+                        else if (grid[r][c] == 0 && grid[i][j] == 2) {
                             counter2++;
                         }
                     }
@@ -301,7 +301,7 @@ public class Grid {
         {
             for (int j=0; j<Config.GRIDSIZE; j++)
             {
-                System.err.print(grid[i][j]);
+                System.err.print(grid[i][j] + " ");
             }
             System.err.println("");
         }
