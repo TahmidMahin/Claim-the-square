@@ -1,3 +1,4 @@
+<!-- LEAGUES level1 level2 level3 level4 -->
 <div id="statement_back" class="statement_back" style="display:none"></div>
 <div class="statement-body">
     <!-- GOAL -->
@@ -71,17 +72,28 @@
             <span class="icon icon-protocol">&nbsp;</span>
             <span>Game Input</span>
         </h1>
+
         <!-- Protocol block -->
         <div class="blk">
-            <div class="text">The program must first read the initialization data from standard input. Then, provide to the
-                standard output one line with ...</div>
+            <div class="title">Initilization Input</div>
+            <div class="text">
+                <p><span class="statement-lineno">Line 1: </span>one integer <var>playerIndex</var> - PlayerIndex 1 means opponent's index will 2 and vice versa.</p>
+            </div>
         </div>
 
         <!-- Protocol block -->
         <div class="blk">
-            <div class="title">Input</div>
+            <div class="title">For Each Game Loop</div>
             <div class="text">
-                <p><span class="statement-lineno">Line 1: </span>one string <var>...</var>, the ...</p>
+                <p><span class="statement-lineno">Line 1: </span>one integer <var>cellCount</var> - Number of cells in the board.</p>
+                <span class="statement-lineno">Next <var>cellCount</var> lines:</span>
+                three integers <var>row</var> <var> col</var> <var>state</var> - Position and state of a cell in the board.<br>
+                <ul>
+                    <li>State -1: Cell is blocked.</li>
+                    <li>State 0: Cell is empty.</li>
+                    <li>State 1: Cell has a piece of player with index 1.</li>
+                    <li>State 2: Cell has a piece of player with index 2.</li>
+                </ul>
             </div>
         </div>
 
@@ -89,17 +101,29 @@
         <div class="blk">
             <div class="title">Output</div>
             <div class="text">
-                <span class="statement-lineno">A single line</span> containing ...
-                <br>
+                <span class="statement-lineno">A single line</span> containing player's move. Example: <action>5 1 REPL 6 2</action>.
+                <ul>
+                    <li>
+                        <action>r<sub>1</sub> c<sub>1</sub> MOVE r<sub>2</sub> c<sub>2</sub></action>: player's piece at row r<sub>1</sub> and column c<sub>1</sub> moves to row r<sub>2</sub> and column c<sub>2</sub>. Cell (r<sub>1</sub>, c<sub>1</sub>) becomes empty.
+                    </li>
+                    <li>
+                        <action>r<sub>1</sub> c<sub>1</sub> REPL r<sub>2</sub> c<sub>2</sub></action>: player's piece at row r<sub>1</sub> and column c<sub>1</sub> replicates to row r<sub>2</sub> and column c<sub>2</sub>.
+                    </li>
+                </ul>
+                You must provide a valid command for exactly one piece each turn.
             </div>
         </div>
 
         <!-- Protocol block -->
         <div class="blk">
             <div class="title">Constraints</div>
-            <div class="text"><var>...</var> contains between 1 and 500 characters.<br>
-                <br>Allotted response time to output
-                is ≤ <const>2</const> seconds.</div>
+            <var>playerIndex</var> is either 1 or 2. <br>
+            <var>cellCount</var> is 49. <br>
+            0≤<var>row</var>≤6 <br>
+            0≤<var>col</var>≤6 <br>
+            -1≤<var>state</var>≤2 <br>
+            Response time per turn ≤ 50ms <br>
+            Response time for the first turn ≤ 1000ms <br>
         </div>
     </div>
     <!-- STORY -->

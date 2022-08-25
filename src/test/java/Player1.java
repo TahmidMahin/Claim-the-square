@@ -19,7 +19,7 @@ public class Player1 {
                         int r = i + dr[dir];
                         int c = j + dc[dir];
                         if (r >= 0 && r < 7 && c >= 0 && c < 7 && grid[r][c] == 0 && dir%2 == 0) {
-                            moves.add(String.format("%d %d %s %d %d", i, j, "JUMP", r ,c));
+                            moves.add(String.format("%d %d %s %d %d", i, j, "MOVE", r ,c));
                         }
                         else if (r >= 0 && r < 7 && c >= 0 && c < 7 && grid[r][c] == 0 && dir%2 == 1) {
                             moves.add(String.format("%d %d %s %d %d", i, j, "REPL", r ,c));
