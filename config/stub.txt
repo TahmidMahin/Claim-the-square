@@ -2,14 +2,14 @@ read playerIndex:int
 gameloop
 read cellCount:int
 loop cellCount read row:int col:int state:int
-write join(0, 0, "JUMP", 1, 1)
+write join("0", "0", "MOVE", "1", "1")
 
 INPUT
 playerIndex: Index of the player in the grid
 cellCount: Number of cells
 row: Row number in the grid
 col: Column number in the grid
-state: State of a cell. (-1 = blocked cell, 0 = empty cell, 1 = player1, 2 = player2)
+state: State of a cell.
 
 OUTPUT
-srcRow srcCol JUMP/REPL destRow destCol
+srcRow srcCol TYPE destRow destCol

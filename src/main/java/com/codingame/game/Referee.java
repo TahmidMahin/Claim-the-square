@@ -2,9 +2,7 @@ package com.codingame.game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import com.codingame.game.action.ActionType;
 import com.codingame.gameengine.core.AbstractPlayer.TimeoutException;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.GameManager;
@@ -24,14 +22,11 @@ public class Referee extends AbstractReferee {
 
     private Grid grid;
     private List<Cell> cells;
-    private Random random;
     private Text[] playerScore = new Text[2];
 
     // TODO import these parameters from CONFIG
     @Override
     public void init() {
-        random = new Random(gameManager.getSeed());
-
         drawBackground();
         drawHud();
         drawGrids();
@@ -39,6 +34,7 @@ public class Referee extends AbstractReferee {
 
         gameManager.setFrameDuration(600);
         gameManager.setMaxTurns(200);
+        gameManager.setTurnMaxTime(100);
 
         cells = getCells();
         sendInitialData();
@@ -166,19 +162,6 @@ public class Referee extends AbstractReferee {
         }
     }
 
-    private void setWinner(Player player) {
-        gameManager.addToGameSummary(GameManager.formatSuccessMessage(player.getNicknameToken() + " won!"));
-        int score = 0;
-        for (int i = 0; i < Config.GRIDSIZE; i++) {
-            for (int j = 0; j < Config.GRIDSIZE; j++) {
-                if (grid.getGridState()[i][j] == player.getIndex() + 1)
-                    score++;
-            }
-        }
-        player.setScore(score);
-        endGame();
-    }
-
     private List<Cell> getCells() {
         List<Cell> cells = new ArrayList<>();
         int[][] gridState = grid.getGridState();
@@ -203,8 +186,17 @@ public class Referee extends AbstractReferee {
                     action.player.getNicknameToken(), action.srcRow, action.srcCol, action.actionType, action.destRow, action.destCol));
             int winner = grid.play(action);
 
+            for (int i = 0; i < Config.PLAYERCOUNT; i++) {
+                int score = grid.getPlayerScore(i);
+                updateScoreHUD(score, i);
+                Player p = gameManager.getPlayer(i);
+                p.setScore(score);
+            }
+
             if (winner != 0) {
-                setWinner(gameManager.getPlayer(winner - 1));
+                Player p = gameManager.getPlayer(winner - 1);
+                gameManager.addToGameSummary(GameManager.formatSuccessMessage(p.getNicknameToken() + " won!"));
+                endGame();
             }
             cells = getCells();
         } catch (NumberFormatException e) {
@@ -221,11 +213,6 @@ public class Referee extends AbstractReferee {
             player.setScore(-1);
             endGame();
         }
-        int score = grid.getPlayerScore(0);
-        updateScoreHUD(score,0);
-
-        score = grid.getPlayerScore(1);
-        updateScoreHUD(score,1);
     }
 
     private void endGame() {
