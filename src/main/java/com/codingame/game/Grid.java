@@ -72,18 +72,18 @@ public class Grid {
         else if (grid[action.destRow][action.destCol] != 0) {
             throw new InvalidAction("Destination position is not empty");
         }
-        else if (actionType != ActionType.REPL && actionType != ActionType.JUMP) {
+        else if (actionType != ActionType.REPL && actionType != ActionType.MOVE) {
             throw new InvalidAction("Invalid command");
         }
         else if (actionType == ActionType.REPL && !src.isDiagonal(dest)) {
             throw new InvalidAction("Invalid move");
         }
-        else if (actionType == ActionType.JUMP && !src.isAdjacent(dest)) {
+        else if (actionType == ActionType.MOVE && !src.isAdjacent(dest)) {
             throw new InvalidAction("Invalid move");
         }
 
         // update grid
-        if (actionType == ActionType.JUMP) {
+        if (actionType == ActionType.MOVE) {
             grid[action.srcRow][action.srcCol] = 0;
         }
         grid[action.destRow][action.destCol] = index;
@@ -235,7 +235,7 @@ public class Grid {
                 }
             }
         }
-        else if(action.actionType == ActionType.JUMP)
+        else if(action.actionType == ActionType.MOVE)
         {
             if(spriteMap[action.srcRow][action.srcCol] == null)
             {
