@@ -18,18 +18,60 @@
             <span>Rules</span>
         </h1>
         <div>
+
             <div class="statement-rules-content">
-                The game is played on a 7 by 7 board. Each player starts with 2 pieces.<br>
-                <br>
+                <h2> About The Board</h2>
+                <ul>
+                    <li>The game is played on a 7 by 7 board.</li>
+                    <li>There are 49 squares in total.</li>
+                    <li>There are 4 tiles that are inaccessible. Those are (2, 2), (2, 4), (4, 2) and (4, 4).</li>
+                    <img src="../src/main/resources/view/assets/board_border.png" width="200 cm">
+                    <li>Each player has two pieces in the board. <img src="../src/main/resources/view/assets/board_border.png" width="25 cm"> </li>
+                    <li>Green player's pieces are at (1, 1) and (5, 5).</li>
+                    <li>Orange player's pieces are at (1,5) and (5, 1).</li>
+                </ul>
+                <h2> How to Claim The Square </h2>
                 In each turn a player can make the following moves to one of his pieces:
                 <ul>
-                    <li>JUMP: A piece can be moved to one of the four adjacent empty squares(Up, Down, Right, Left), leaving the initial square empty.</li>
-                    <li>REPL: A piece can be replicated to one of the four diagonal squares(Top-right, Top-left, Bottom-right, Bottom-left).</li>
+                    <li>
+                        <h3> Move </h3>
+                        <ul>
+                            <li>A piece can be moved to one of the four adjacent empty squares(Up, Down, Right, Left)</li>
+                            <li>When moving, the player loses the claim of the initial square.</li>
+                            <img src="../src/main/resources/view/assets/statement_images/move.png" width="100 cm">
+
+                            <img src="../src/main/resources/view/assets/statement_images/move1.png" width="100 cm">
+                            <img src="../src/main/resources/view/assets/statement_images/move2.png" width="100 cm">
+                        </ul>
+                    </li>
+                    <li>
+                        <h3> Replicate </h3>
+                        <ul>
+                            <li>A piece can be replicated to one of the four diagonal squares(Top-right, Top-left, Bottom-right, Bottom-left).</li>
+                            <li>When replicating, the player will have both the initial square and the destination square.</li>
+                            <img src="../src/main/resources/view/assets/statement_images/replicate.png" width="100 cm">
+                            <img src="../src/main/resources/view/assets/statement_images/replicate1.png" width="100 cm">
+                            <img src="../src/main/resources/view/assets/statement_images/replicate2.png" width="100 cm">
+                        </ul>
+                    </li>
+                    <li>
+                        <h3>Convert</h3>
+                        Moving and Replicating are the simplest way to claim a square. There's also another way to convert opponent's squares.
+                        <ul>
+                            <li>When moving or replicating a piece, if the position that the piece is moving/replicating to has any of its 4 neighbors
+                                (Right, Left, Up, Down) claimed by the opponent, those squares are converted.</li>
+                            <img src="../src/main/resources/view/assets/statement_images/convert1.png" width="100 cm">
+                            <img src="../src/main/resources/view/assets/statement_images/convert15.png" width="100 cm">
+                            <img src="../src/main/resources/view/assets/statement_images/convert2.png" width="100 cm">
+                        </ul>
+                    </li>
+
+
                 </ul>
-                <br>
-                Moving or replicating a piece to one of the four adjacent squares of opponent's piece will convert it.<br>
-                Player's score is calculated based on the number of pieces on the board.
-                The game will end when:
+                <h2>Score</h2>
+                Player's score is calculated based on the number of pieces the player has on the board.
+
+                <h2> End Condition </h2>
                 <ul>
                     <li>All of the cells of the 7 by 7 board is filled.</li>
                     <li>One of the player runs out of moves. The empty squares will be filled with pieces of the other player.</li>
