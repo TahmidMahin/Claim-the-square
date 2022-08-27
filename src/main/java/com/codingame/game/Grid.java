@@ -64,7 +64,7 @@ public class Grid {
             throw new InvalidAction("Destination position is outside of the grid");
         }
         else if (grid[dest.r][dest.c] == -1) {
-            throw new InvalidAction("Destination position is blocked");
+            throw new InvalidAction("Destination position is inaccessible");
         }
         else if (grid[action.srcRow][action.srcCol] != index) {
             throw new InvalidAction("Source position does not contain player's piece");
@@ -308,18 +308,4 @@ public class Grid {
             graphicEntityModule.commitEntityState(1, entity);
         }
     }
-
-    public void print()
-    {
-        for(int i=0; i<Config.GRIDSIZE; i++)
-        {
-            for (int j=0; j<Config.GRIDSIZE; j++)
-            {
-                System.err.print(grid[i][j] + " ");
-            }
-            System.err.println("");
-        }
-    }
-
-
 }

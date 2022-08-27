@@ -1,13 +1,11 @@
 package com.codingame.game;
 
-import com.codingame.game.action.ActionType;
 import com.codingame.game.action.Action;
 import com.codingame.gameengine.core.AbstractMultiplayerPlayer;
 import com.codingame.gameengine.module.entities.Group;
 
 public class Player extends AbstractMultiplayerPlayer {
     public Group hud;
-    public int score = 0;
     
     @Override
     public int getExpectedOutputLines() {

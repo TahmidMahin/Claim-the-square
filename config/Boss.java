@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Player {
+class Player {
     private static final int[] dr = {-1, -1, 0, 1, 1, 1, 0, -1};
     private static final int[] dc = {0, -1, -1, -1, 0, 1, 1, 1};
 
@@ -35,8 +35,9 @@ public class Player {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         index = in.nextInt();
-
+        System.err.println(index);
         while (true) {
+
             int cellCount = in.nextInt();
 
             for (int i = 0; i < cellCount; i++) {
@@ -45,7 +46,6 @@ public class Player {
                 int state = in.nextInt();
                 grid[row][col] = state;
             }
-
             makeDecision();
         }
     }
